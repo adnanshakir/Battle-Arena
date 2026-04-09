@@ -8,8 +8,6 @@ import { useSidebar } from './hooks/useSidebar';
 import { mockComparisons } from './data/mockData';
 import { generateId } from './utils/helpers';
 
-const APP_NAME = 'Verdict';
-
 export default function App() {
   const { theme, toggleTheme } = useTheme();
   const { isOpen, isMobile, toggle, close } = useSidebar();
@@ -99,7 +97,6 @@ export default function App() {
           onToggleSidebar={toggle}
           theme={theme}
           onToggleTheme={toggleTheme}
-          title={APP_NAME}
         />
 
         {/* Page area */}

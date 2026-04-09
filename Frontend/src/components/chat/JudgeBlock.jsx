@@ -2,19 +2,42 @@ import React from 'react';
 import { Scale, Trophy } from 'lucide-react';
 import { formatScore } from '../../utils/helpers';
 
-/* ── Score bar ──────────────────────────────────────── */
-function ScoreBar({ score, max = 10 }) {
-  const pct = Math.min(Math.max((score / max) * 100, 0), 100);
+/* ── Circular score ─────────────────────────────────── */
+function CircularScore({ score, max = 10 }) {
+  const clamped = Math.min(Math.max(score, 0), max);
+  const pct = clamped / max;
+  const size = 88;
+  const stroke = 8;
+  const radius = (size - stroke) / 2;
+  const circumference = 2 * Math.PI * radius;
+  const dashOffset = circumference * (1 - pct);
+
   return (
-    <div className="flex items-center gap-3">
-      <div className="flex-1 h-1 bg-muted-bg rounded-full overflow-hidden">
-        <div
-          className="h-full bg-fg rounded-full"
-          style={{ width: `${pct}%`, transition: 'width 0.6s ease' }}
+    <div className="relative inline-flex items-center justify-center">
+      <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} className="-rotate-90">
+        <circle
+          cx={size / 2}
+          cy={size / 2}
+          r={radius}
+          fill="none"
+          stroke="var(--muted-bg)"
+          strokeWidth={stroke}
         />
-      </div>
-      <span className="text-sm font-semibold text-fg tabular-nums w-7 text-right">
-        {formatScore(score)}
+        <circle
+          cx={size / 2}
+          cy={size / 2}
+          r={radius}
+          fill="none"
+          stroke="var(--accent)"
+          strokeWidth={stroke}
+          strokeLinecap="round"
+          strokeDasharray={circumference}
+          strokeDashoffset={dashOffset}
+          style={{ transition: 'stroke-dashoffset 0.6s ease' }}
+        />
+      </svg>
+      <span className="absolute text-sm font-semibold text-fg tabular-nums">
+        {formatScore(score)} / 10
       </span>
     </div>
   );
@@ -40,9 +63,9 @@ export function JudgeBlock({ judgeData }) {
 
   if (!hasValidScores) {
     return (
-      <div className="border border-[#27272a] rounded-lg bg-[#111113] overflow-hidden">
-        <div className="px-4 py-3 border-b border-[#27272a] flex items-center gap-2">
-          <Scale size={14} className="text-subtle" />
+      <div className="border border-border rounded-lg bg-card overflow-hidden">
+        <div className="px-4 py-3 border-b border-border flex items-center gap-2">
+          <Scale size={18} className="text-subtle" />
           <span className="text-sm font-semibold text-fg">Judge Evaluation</span>
         </div>
         <div className="p-4">
@@ -67,20 +90,20 @@ export function JudgeBlock({ judgeData }) {
         : null; // tie
 
   return (
-    <div className="border border-[#27272a] rounded-lg bg-[#111113] overflow-hidden">
+    <div className="border border-border rounded-lg bg-card overflow-hidden">
       {/* Header */}
-      <div className="px-4 py-3 border-b border-[#27272a] flex items-center justify-between">
+      <div className="px-4 py-3 border-b border-border flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <Scale size={14} className="text-subtle" />
+          <Scale size={18} className="text-subtle" />
           <span className="text-sm font-semibold text-fg">Judge Evaluation</span>
         </div>
 
         {winner ? (
-          <div className="flex items-center gap-1.5">
-            <Trophy size={12} className="text-subtle" />
-            <span className="text-xs text-subtle">
+          <div className="flex items-center gap-1.5 rounded-md border border-border bg-muted-bg px-2 py-1">
+            <Trophy size={18} className="text-accent" />
+            <span className="text-xs text-fg-2">
               Winner:{' '}
-              <span className="font-medium text-green-400">{winner}</span>
+              <span className="font-semibold text-accent">{winner}</span>
             </span>
           </div>
         ) : (
@@ -88,27 +111,27 @@ export function JudgeBlock({ judgeData }) {
         )}
       </div>
 
-      <div className="p-4 space-y-5">
-        {/* Score bars */}
-        <div className="grid grid-cols-2 gap-x-6 gap-y-3">
-          <div className="space-y-2">
+      <div className="p-4 space-y-6">
+        {/* Circular scores */}
+        <div className="grid grid-cols-2 gap-x-8 gap-y-4 items-start">
+          <div className="space-y-3 flex flex-col items-center">
             <p className="text-[11px] font-semibold text-muted uppercase tracking-widest">
               Model A
             </p>
-            <ScoreBar score={solution_1_score} />
+            <CircularScore score={solution_1_score} />
           </div>
-          <div className="space-y-2">
+          <div className="space-y-3 flex flex-col items-center">
             <p className="text-[11px] font-semibold text-muted uppercase tracking-widest">
               Model B
             </p>
-            <ScoreBar score={solution_2_score} />
+            <CircularScore score={solution_2_score} />
           </div>
         </div>
 
         <div className="border-t border-border" />
 
         {/* Reasoning */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <Reasoning label="Model A — Reasoning" text={solution_1_reasoning} />
           <Reasoning label="Model B — Reasoning" text={solution_2_reasoning} />
         </div>

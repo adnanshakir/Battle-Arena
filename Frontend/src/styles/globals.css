@@ -12,6 +12,7 @@
   --muted-bg: #f1f5f9;
   --subtle: #64748b;
   --ring: #cbd5e1;
+  --accent: #22c55e;
 }
 
 .dark {
@@ -24,6 +25,7 @@
   --muted-bg: #1f1f22;
   --subtle: #71717a;
   --ring: #3f3f46;
+  --accent: #22c55e;
 }
 
 /* ─── Tailwind Theme Extension (Inline) ─────────────── */
@@ -37,6 +39,7 @@
   --color-muted-bg: var(--muted-bg);
   --color-subtle: var(--subtle);
   --color-ring: var(--ring);
+  --color-accent: var(--accent);
   --font-sans:
     "Inter", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
 }
@@ -111,13 +114,13 @@ body {
 
 .prose p {
   margin-bottom: 0.95em;
-  color: #64748b;
+  color: var(--fg-2);
   font-size: 0.9375rem;
   line-height: 1.68;
 }
 
 .dark .prose p {
-  color: #a1a1aa;
+  color: var(--fg-2);
 }
 
 .prose ul,
@@ -143,7 +146,7 @@ body {
   border-radius: 4px;
   padding: 0.15em 0.4em;
   font-family: "JetBrains Mono", ui-monospace, monospace;
-  color: #e5e7eb;
+  color: var(--fg);
 }
 
 .prose pre code {

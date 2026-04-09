@@ -33,7 +33,7 @@ export function MessageInput({ onSubmit, loading = false, placeholder }) {
   return (
     <div
       className={[
-        'flex items-end gap-2 rounded-lg border px-3 py-2',
+        'flex items-end gap-2 rounded-lg border px-4 py-3',
         'bg-card transition-colors duration-150',
         'focus-within:border-subtle border-border',
       ].join(' ')}
@@ -48,11 +48,11 @@ export function MessageInput({ onSubmit, loading = false, placeholder }) {
         rows={1}
         disabled={loading}
         aria-label="Query input"
-        style={{ minHeight: '36px', maxHeight: '180px' }}
+        style={{ minHeight: '40px', maxHeight: '180px' }}
         className={[
           'flex-1 bg-transparent text-fg text-sm',
           'placeholder:text-muted outline-none resize-none',
-          'py-1.5 leading-relaxed',
+          'py-2 leading-relaxed',
           loading ? 'opacity-50 cursor-not-allowed' : '',
         ].join(' ')}
       />
@@ -60,7 +60,7 @@ export function MessageInput({ onSubmit, loading = false, placeholder }) {
         onClick={handleSubmit}
         disabled={!canSubmit}
         size="icon"
-        className="flex-shrink-0 mb-0.5"
+        className="shrink-0 mb-0.5"
         aria-label="Submit query"
       >
         {loading

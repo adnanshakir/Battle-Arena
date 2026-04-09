@@ -1,8 +1,8 @@
 import React from 'react';
-import { Menu, Sun, Moon, PanelLeftClose, PanelLeft } from 'lucide-react';
+import { Sun, Moon, PanelLeftClose, PanelLeft } from 'lucide-react';
 import { Button } from '../ui/Button';
 
-export function Header({ isOpen, onToggleSidebar, theme, onToggleTheme, title }) {
+export function Header({ isOpen, onToggleSidebar, theme, onToggleTheme }) {
   return (
     <header className="h-14 flex-shrink-0 flex items-center justify-between px-4 border-b border-border bg-surface">
       {/* Left */}
@@ -20,11 +20,6 @@ export function Header({ isOpen, onToggleSidebar, theme, onToggleTheme, title })
           }
         </Button>
 
-        {title && (
-          <p className="text-sm text-fg-2 truncate max-w-xs hidden sm:block">
-            {title}
-          </p>
-        )}
       </div>
 
       {/* Right */}

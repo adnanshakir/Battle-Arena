@@ -1,5 +1,5 @@
 import React from 'react';
-import { Plus, MessageSquare, X, Clock, LayoutDashboard } from 'lucide-react';
+import { Plus, MessageSquare, X, Clock, Bot } from 'lucide-react';
 import { Button } from '../ui/Button';
 import { truncate } from '../../utils/helpers';
 
@@ -37,7 +37,7 @@ export function Sidebar({
         {/* Header */}
         <div className="h-14 flex items-center justify-between px-4 border-b border-border flex-shrink-0">
           <div className="flex items-center gap-2">
-            <LayoutDashboard size={15} className="text-subtle" />
+            <Bot size={18} className="text-accent" />
             <span className="text-sm font-semibold text-fg tracking-tight">
               Verdict
             </span>
@@ -84,7 +84,7 @@ export function Sidebar({
                       'w-full flex items-start gap-2.5 px-3 py-2.5 rounded-md text-left',
                       'transition-colors duration-100',
                       currentId === item.id
-                        ? 'bg-muted-bg text-fg'
+                        ? 'bg-muted-bg text-accent'
                         : 'text-subtle hover:bg-muted-bg hover:text-fg',
                     ].join(' ')}
                   >
