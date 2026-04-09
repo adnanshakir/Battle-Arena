@@ -120,20 +120,18 @@ export function ResponseCard({
   };
 
   const cardClass = expanded
-    ? "fixed inset-4 z-50 flex flex-col shadow-2xl"
-    : "flex flex-col h-full hover:opacity-95";
+    ? "fixed inset-4 z-50 flex flex-col shadow-2xl transition-opacity duration-200 ease-out opacity-100"
+    : "flex flex-col h-full transition-opacity duration-150 ease-in opacity-100";
 
   return (
     <>
       {/* Expanded backdrop */}
       {expanded && (
         <div
-          className="fixed inset-0 bg-fg/20 z-40"
+          className="fixed inset-0 bg-fg/20 z-40 animate-fadeIn"
           onClick={() => setExpanded(false)}
-          aria-hidden="true"
         />
       )}
-
       <Card className={cardClass}>
         {/* Card Header */}
         <CardHeader>

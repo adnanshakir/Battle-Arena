@@ -14,11 +14,11 @@ export function Home({ onSubmit, loading }) {
     <div className="flex-1 flex items-center justify-center px-4 py-12 overflow-y-auto">
       <div className="w-full max-w-150 space-y-5">
         {/* Hero */}
-        <div className="text-center space-y-4">
-          <div className="inline-flex items-center justify-center rounded-md bg-muted-bg border border-border p-2">
-            <Bot size={28} className="text-accent" />
+        <div className="text-center space-y-2">
+          <div className="inline-flex items-center justify-center rounded-md p-1">
+            <Bot size={48} className="text-accent" />
           </div>
-          <h1 className="text-3xl md:text-4xl font-semibold tracking-tight text-fg leading-tight mt-4">
+          <h1 className="text-3xl md:text-4xl font-semibold tracking-tight text-fg leading-tight">
             Verdict
           </h1>
           <p className="text-base md:text-lg text-fg-2 mt-2">

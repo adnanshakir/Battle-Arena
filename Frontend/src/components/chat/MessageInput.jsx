@@ -33,7 +33,7 @@ export function MessageInput({ onSubmit, loading = false, placeholder }) {
   return (
     <div
       className={[
-        'flex items-end gap-2 rounded-lg border px-4 py-3',
+        'flex items-end gap-2 rounded-lg border px-4 py-2',
         'bg-card transition-colors duration-150',
         'focus-within:border-subtle border-border',
       ].join(' ')}
