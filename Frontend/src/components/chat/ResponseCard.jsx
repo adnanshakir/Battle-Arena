@@ -5,40 +5,70 @@ import { Copy, Maximize2, Minimize2, Check } from "lucide-react";
 import { Button } from "../ui/Button";
 import { Card, CardHeader, CardContent } from "../ui/Card";
 import { copyToClipboard } from "../../utils/helpers";
+import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
+import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 
 function MarkdownCodeBlock({ className, children }) {
   const [copied, setCopied] = useState(false);
-  const language = /language-([\w-]+)/.exec(className || "")?.[1] || "text";
-  const code = String(children).replace(/\n$/, "");
+
+  const language = className?.replace("language-", "");
+  const code = String(children).trim();
+  const isSmall = code.length < 40 && !code.includes("\n");
+  const isMultiLine = code.includes("\n");
+
+  if (isSmall) {
+    return (
+      <code className="px-2 py-1 rounded bg-muted-bg border border-border text-fg text-sm">
+        {code}
+      </code>
+    );
+  }
 
   const handleCopy = async () => {
     const ok = await copyToClipboard(code);
     if (ok) {
       setCopied(true);
-      setTimeout(() => setCopied(false), 1300);
+      setTimeout(() => setCopied(false), 1500);
     }
   };
 
   return (
-    <pre className="rounded-lg border border-border bg-card overflow-hidden shadow-sm">
-  <div className="flex items-center justify-between px-3 py-2 bg-muted-bg border-b border-border text-[11px]">
-    <span className="font-mono uppercase tracking-wide text-subtle">
-      {language}
-    </span>
+    <div className="rounded-lg border border-border bg-card overflow-hidden my-3">
+      {isMultiLine && (
+        <div className="flex justify-between items-center px-3 py-2 text-xs bg-muted-bg border-b border-border">
+          {language && (
+            <span className="text-subtle uppercase">{language}</span>
+          )}
 
-    <button
-      onClick={handleCopy}
-      className="inline-flex items-center gap-1 text-subtle hover:text-fg"
-    >
-      <Copy size={12} />
-      <span>{copied ? "Copied" : "Copy"}</span>
-    </button>
-  </div>
+          <button
+            onClick={handleCopy}
+            className="text-subtle hover:text-fg flex items-center gap-1"
+          >
+            {copied ? <Check size={12} /> : <Copy size={12} />}
+            <span>{copied ? "Copied" : "Copy"}</span>
+          </button>
+        </div>
+      )}
 
-  <code className="block p-4 font-mono text-sm leading-relaxed text-fg whitespace-pre">
-    {code}
-  </code>
-</pre>
+      <SyntaxHighlighter
+        language={language}
+        style={oneDark}
+        customStyle={{
+          margin: 0,
+          padding: "14px 16px",
+          background: "transparent",
+          fontSize: "13px",
+          lineHeight: "1.6",
+        }}
+        codeTagProps={{
+          style: {
+            background: "transparent",
+          },
+        }}
+      >
+        {code}
+      </SyntaxHighlighter>
+    </div>
   );
 }
 
@@ -146,7 +176,7 @@ export function ResponseCard({
         {/* Scrollable content */}
         <CardContent
           className={[
-            "flex-1 overflow-y-auto px-4 py-4 space-y-4",
+            "flex-1 space-y-4",
             expanded ? "max-h-[calc(100%-49px)]" : "max-h-[420px]",
           ].join(" ")}
         >
@@ -168,45 +198,47 @@ export function ResponseCard({
               <p className="text-sm text-muted">No response generated</p>
             </div>
           ) : (
-            <article className="prose text-sm">
-              <ReactMarkdown
-                remarkPlugins={[remarkGfm]}
-                components={{
-                  p({ children }) {
-                    if (
-                      Array.isArray(children) &&
-                      children.some(
-                        (child) =>
-                          child?.type === "pre" ||
-                          child?.props?.node?.tagName === "pre",
-                      )
-                    ) {
-                      return <>{children}</>;
-                    }
+            <>
+              <article className="prose text-sm">
+                <ReactMarkdown
+                  remarkPlugins={[remarkGfm]}
+                  components={{
+                    p({ children }) {
+                      if (
+                        Array.isArray(children) &&
+                        children.some(
+                          (child) =>
+                            child?.type === "pre" ||
+                            child?.props?.node?.tagName === "pre",
+                        )
+                      ) {
+                        return <>{children}</>;
+                      }
 
-                    return <p className="mb-3 text-fg-2">{children}</p>;
-                  },
+                      return <p className="mb-3 text-fg-2">{children}</p>;
+                    },
 
-                  code({ inline, className, children, ...props }) {
-                    if (inline) {
+                    code({ inline, className, children, ...props }) {
+                      if (inline) {
+                        return (
+                          <code className="px-1 py-0.5 rounded bg-muted-bg border border-border text-fg text-[0.85em]">
+                            {children}
+                          </code>
+                        );
+                      }
+
                       return (
-                        <code className="px-1 py-0.5 rounded bg-muted-bg border border-border text-fg text-[0.85em]">
+                        <MarkdownCodeBlock className={className} {...props}>
                           {children}
-                        </code>
+                        </MarkdownCodeBlock>
                       );
-                    }
-
-                    return (
-                      <MarkdownCodeBlock className={className} {...props}>
-                        {children}
-                      </MarkdownCodeBlock>
-                    );
-                  },
-                }}
-              >
-                {normalized}
-              </ReactMarkdown>
-            </article>
+                    },
+                  }}
+                >
+                  {normalized}
+                </ReactMarkdown>
+              </article>
+            </>
           )}
         </CardContent>
       </Card>

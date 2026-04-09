@@ -24,8 +24,15 @@ export function CardHeader({ className = '', children, ...props }) {
 
 export function CardContent({ className = '', children, ...props }) {
   return (
-    <div className={`px-4 py-4 ${className}`} {...props}>
-      {children}
+    <div className={`relative flex-1 ${className}`} {...props}>
+
+      {/* Scroll layer */}
+      <div className="h-full overflow-y-auto px-4 py-4">
+        {children}
+      </div>
+
+      {/* Fade overlay (true edge) */}
+      <div className="pointer-events-none absolute bottom-0 left-0 w-full h-10 bg-gradient-to-t from-surface to-transparent" />
     </div>
   );
 }
