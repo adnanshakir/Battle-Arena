@@ -3,9 +3,11 @@ import { useState, useEffect } from 'react';
 export function useTheme() {
   const [theme, setTheme] = useState(() => {
     try {
-      const stored = localStorage.getItem('indic-arena-theme');
+      const stored = localStorage.getItem('verdict-theme');
       if (stored === 'dark' || stored === 'light') return stored;
-    } catch {}
+    } catch {
+      // Ignore storage read errors in restricted environments.
+    }
     return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
   });
 
@@ -17,8 +19,10 @@ export function useTheme() {
       root.classList.remove('dark');
     }
     try {
-      localStorage.setItem('indic-arena-theme', theme);
-    } catch {}
+      localStorage.setItem('verdict-theme', theme);
+    } catch {
+      // Ignore storage write errors in restricted environments.
+    }
   }, [theme]);
 
   const toggleTheme = () => setTheme(t => (t === 'dark' ? 'light' : 'dark'));

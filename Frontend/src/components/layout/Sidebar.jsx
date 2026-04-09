@@ -39,7 +39,7 @@ export function Sidebar({
           <div className="flex items-center gap-2">
             <LayoutDashboard size={15} className="text-subtle" />
             <span className="text-sm font-semibold text-fg tracking-tight">
-              Indic LLM Arena
+              Verdict
             </span>
           </div>
           <Button
@@ -71,7 +71,7 @@ export function Sidebar({
             <div className="px-4 py-10 text-center">
               <p className="text-xs text-muted">No comparisons yet</p>
               <p className="text-[11px] text-muted mt-1 opacity-60">
-                Submit a question to get started
+                Try a coding, reasoning, or practical prompt
               </p>
             </div>
           ) : (
@@ -108,7 +108,7 @@ export function Sidebar({
         {/* Footer */}
         <div className="p-4 border-t border-border flex-shrink-0">
           <p className="text-[10px] text-muted text-center leading-relaxed">
-            Compare · Evaluate · Understand
+            Compare answers. Get a clear verdict.
           </p>
         </div>
       </aside>

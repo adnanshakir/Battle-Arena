@@ -3,10 +3,10 @@ import { Sparkles } from 'lucide-react';
 import { MessageInput } from '../components/chat/MessageInput';
 
 const SUGGESTED = [
-  'Explain the concept of karma in classical Sanskrit literature.',
-  'Translate "Knowledge is power" into Hindi, Tamil, and Telugu.',
-  'What are the main differences between Devanagari and Tamil script?',
-  'How does code-switching between Hindi and English work in urban India?',
+  'Write a factorial function in JS',
+  'Explain closures in JavaScript',
+  'Fix this bug: function sum(a, b) { return a - b; }',
+  'Summarize this paragraph in 3 bullet points',
 ];
 
 export function Home({ onSubmit, loading }) {
@@ -20,17 +20,18 @@ export function Home({ onSubmit, loading }) {
             <Sparkles size={16} className="text-subtle" />
           </div>
           <h1 className="text-[1.6rem] font-semibold tracking-tight text-fg leading-tight">
-            Indic LLM Arena
+            Verdict
           </h1>
-          <p className="text-sm text-fg-2 leading-relaxed max-w-sm mx-auto">
-            Submit a question. See two model responses side-by-side.
-            An automated judge scores and explains the result.
-          </p>
+          <p className="text-sm text-fg-2 leading-relaxed max-w-sm mx-auto">Compare answers. Get a clear verdict.</p>
         </div>
 
         {/* Primary input */}
         <div id="home-input-wrapper">
-          <MessageInput onSubmit={onSubmit} loading={loading} />
+          <MessageInput
+            onSubmit={onSubmit}
+            loading={loading}
+            placeholder="Ask coding, reasoning, or general questions"
+          />
           <p className="mt-2 text-[11px] text-muted text-center">
             Press <kbd className="px-1 py-0.5 rounded text-[10px] border border-border bg-muted-bg font-mono">Enter</kbd> to submit
             &nbsp;·&nbsp;

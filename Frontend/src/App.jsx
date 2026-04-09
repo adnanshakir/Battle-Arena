@@ -6,7 +6,9 @@ import { Chat } from './pages/Chat';
 import { useTheme } from './hooks/useTheme';
 import { useSidebar } from './hooks/useSidebar';
 import { mockComparisons } from './data/mockData';
-import { generateId, truncate, timeAgo } from './utils/helpers';
+import { generateId } from './utils/helpers';
+
+const APP_NAME = 'Verdict';
 
 export default function App() {
   const { theme, toggleTheme } = useTheme();
@@ -17,11 +19,14 @@ export default function App() {
   const [currentChat, setCurrentChat] = useState(null);
   const [history, setHistory] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [pendingQuery, setPendingQuery] = useState('');
 
   /* ── Handle new query submission ─────────────────── */
   const handleSubmit = useCallback(
     async (query) => {
       setLoading(true);
+      setPendingQuery(query);
+      setView('chat');
 
       // Simulate network delay
       await new Promise((r) => setTimeout(r, 1100));
@@ -40,7 +45,7 @@ export default function App() {
 
       setHistory((prev) => [chatItem, ...prev]);
       setCurrentChat(chatItem);
-      setView('chat');
+      setPendingQuery('');
       setLoading(false);
 
       if (isMobile) close();
@@ -64,6 +69,7 @@ export default function App() {
   const handleNewChat = useCallback(() => {
     setView('home');
     setCurrentChat(null);
+    setPendingQuery('');
     if (isMobile) close();
   }, [isMobile, close]);
 
@@ -93,7 +99,7 @@ export default function App() {
           onToggleSidebar={toggle}
           theme={theme}
           onToggleTheme={toggleTheme}
-          title={currentChat ? truncate(currentChat.query, 52) : undefined}
+          title={APP_NAME}
         />
 
         {/* Page area */}
@@ -103,6 +109,7 @@ export default function App() {
           ) : (
             <Chat
               chatData={currentChat}
+              pendingQuery={pendingQuery}
               onSubmit={handleSubmit}
               loading={loading}
             />

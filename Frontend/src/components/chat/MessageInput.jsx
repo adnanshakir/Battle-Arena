@@ -44,7 +44,7 @@ export function MessageInput({ onSubmit, loading = false, placeholder }) {
         value={value}
         onChange={(e) => setValue(e.target.value)}
         onKeyDown={handleKeyDown}
-        placeholder={placeholder ?? 'Enter a question or problem to compare models…'}
+        placeholder={placeholder ?? 'Ask coding, reasoning, or general questions'}
         rows={1}
         disabled={loading}
         aria-label="Query input"

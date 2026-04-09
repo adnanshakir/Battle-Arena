@@ -2,160 +2,159 @@ export const mockComparisons = [
   {
     id: 'comp-1',
     problem: '',
-    solution_1: `## Sanskrit's Influence on Modern Indian Languages
+    solution_1: `## JavaScript Factorial (Iterative)
 
-Sanskrit serves as the etymological and grammatical foundation for the majority of North Indian languages—collectively referred to as the Indo-Aryan language family.
+Use a loop when you want predictable performance and no recursion depth issues.
 
-### Vocabulary (Tatsama & Tadbhava)
+\`factorial(n)\` requirements:
+- non-negative integer input
+- return \`1\` for \`0\`
+- throw for invalid values
 
-Modern languages inherit Sanskrit vocabulary through two routes:
+\`\`\`js
+function factorial(n) {
+  if (!Number.isInteger(n) || n < 0) {
+    throw new Error('n must be a non-negative integer');
+  }
 
-- **Tatsama** words: borrowed directly and nearly unchanged (e.g., *karma*, *dharma*, *yoga*)
-- **Tadbhava** words: evolved phonetically over centuries (Sanskrit *dugdha* → Hindi *doodh*, milk)
+  let result = 1;
+  for (let i = 2; i <= n; i += 1) {
+    result *= i;
+  }
+  return result;
+}
+\`\`\`
 
-### Grammar & Structure
+Example:
+- \`factorial(5)\` -> \`120\`
+- time complexity: \`O(n)\`
+- space complexity: \`O(1)\``,
 
-Hindi, Marathi, Bengali, and Gujarati all retain Sanskrit-derived case endings and verb conjugation systems, though simplified. The concept of *vibhakti* (case markers) directly descends from Sanskrit's eight-case system (*ashtakarana*).
+    solution_2: `## JavaScript Factorial (Recursive)
 
-### Script
+Recursive version is concise and easier to map to the math definition:
 
-Devanagari—used for Hindi, Marathi, Nepali, and Sanskrit itself—was directly codified from the Brahmi script tradition, with phoneme-to-grapheme correspondence designed around Sanskrit phonology.
+\`n! = n * (n - 1)!\` and \`0! = 1\`
 
-### Cultural & Academic Registers
+\`\`\`js
+const factorial = (n) => {
+  if (!Number.isInteger(n) || n < 0) {
+    throw new TypeError('Expected a non-negative integer');
+  }
+  if (n <= 1) return 1;
+  return n * factorial(n - 1);
+};
+\`\`\`
 
-Higher registers of Hindi (*Shuddh Hindi*), formal Bengali, and classical Marathi draw heavily from Sanskrit, especially in literature, government, and religious contexts.
-
-**Conclusion**: Sanskrit is not merely historical—it is the active structural backbone of grammar, lexicon, and script for over 600 million speakers across South Asia.`,
-
-    solution_2: `## Sanskrit and Modern Indian Languages
-
-The relationship between Sanskrit and modern Indian languages is substantial, particularly for the Indo-Aryan branch (Hindi, Bengali, Marathi, Gujarati, Punjabi, etc.).
-
-**Direct borrowings** are common in formal registers. Words like *vidyalaya* (school), *pustaka* (book), and *jala* (water) appear across multiple languages with minimal phonetic drift.
-
-**Indirect influence** occurs through Prakrits and Apabhraṃśa—the intermediate stages between Classical Sanskrit and today's vernaculars. This chain: Sanskrit → Pali/Prakrits → Apabhraṃśa → Modern languages explains why common everyday words look different from their Sanskrit roots.
-
-**Dravidian languages** (Tamil, Telugu, Kannada, Malayalam) were influenced differently—mainly through loanwords in religion, philosophy, and administration, not structural grammar. Tamil, notably, has a pre-Vedic literary tradition that predates Sanskrit contact.
-
-**Modern impact**: Sanskrit roots continue to generate new technical vocabulary. Many Hindi and Marathi terms for computers (e.g., *sanganak* for computer) are Sanskrit-derived neologisms.
-
-The influence is profound but not uniform—it is deepest in Indo-Aryan languages and more superficial in Dravidian ones.`,
+Notes:
+1. Very readable for interviews.
+2. For large \`n\`, recursion can overflow the call stack.
+3. Prefer iterative approach in production if limits are unknown.`,
 
     judge_recommendation: {
-      solution_1_score: 8.6,
-      solution_2_score: 7.4,
+      solution_1_score: 8.8,
+      solution_2_score: 8.2,
       solution_1_reasoning:
-        'Well-structured with clear subheadings. Introduces the tatsama/tadbhava distinction accurately, covers script lineage, and provides concrete examples. Slightly over-claims Sanskrit as "backbone" for all speakers including Dravidian.',
+        'Iterative version is robust for runtime constraints, includes clear input validation, and explains complexity. Practical and production-friendly.',
       solution_2_reasoning:
-        'Correctly distinguishes Indo-Aryan vs. Dravidian influence—a critical nuance the first response missed. However, the formatting is less structured and some claims (e.g., Prakrits chain) lack concrete examples.',
+        'Recursive explanation is clear and mathematically intuitive. It correctly warns about stack limits, but it is slightly less resilient than the iterative version.',
     },
   },
 
   {
     id: 'comp-2',
     problem: '',
-    solution_1: `## Translating "The river flows calmly" into South Asian Languages
+    solution_1: `## Debugging the Function
 
-Here are accurate translations across three major Indic languages:
+Bug:
 
-### Tamil (தமிழ்)
-**ஆறு அமைதியாக ஓடுகிறது**
-*Āṟu amaithiyāka ōṭukiṟatu*
+\`\`\`js
+function sum(a, b) {
+  return a - b;
+}
+\`\`\`
 
-### Telugu (తెలుగు)
-**నది శాంతంగా ప్రవహిస్తుంది**
-*Nadi śāntangā pravahisṭundi*
+Fix:
 
-### Bengali (বাংলা)
-**নদী শান্তভাবে প্রবাহিত হয়**
-*Nodi shantobhabe probahito hoy*
+\`\`\`js
+function sum(a, b) {
+  return a + b;
+}
+\`\`\`
 
-### Notes on Translation Choices
-- **Tamil** uses *amaithiyāka* (adverb from *amaidi*, peace/calm) — culturally resonates with classical Sangam poetry descriptions of rivers.
-- **Telugu** uses *śāntangā* (from Sanskrit *śānti*) — the Sanskritic loanword is natural in formal Telugu.
-- **Bengali** *shantobhabe* follows the typical adverb formation pattern (-bhabe suffix indicating manner).
+Quick checks:
+- \`sum(2, 3) === 5\`
+- \`sum(-1, 1) === 0\`
+- \`sum(0, 0) === 0\`
 
-All three capture the static, contemplative quality of "calmly" rather than rendering it as "slowly," which would be a common mistranslation.`,
+If this came from a calculator feature, also add tests for string inputs and reject invalid values.`,
 
-    solution_2: `## River Flows Calmly — Three Indic Translations
-
-**Tamil:**
-ஆறு அமைதியாக ஒழுகுகிறது
-(Aaru amaidiyaaga ozhugugiradu)
-
-**Telugu:**
-నది ప్రశాంతంగా ప్రవహిస్తోంది
-(Nadi prashaanthangaa pravahitondi)
-
-**Bengali:**
-নদী শান্তিপূর্ণভাবে প্রবাহিত হচ্ছে
-(Nodi shantipurnobhabe probahito hochhe)
-
-These are fairly standard translations using the most natural phrasing in each language. Tamil uses *ozhugugiradu* for flowing (more naturalistic than *ōṭukiṟatu*), Telugu uses *prashaanthangaa* (completely calm, perhaps slightly stronger than needed), and Bengali uses the progressive *hochhe* form which implies ongoing action.`,
+    solution_2: '',
 
     judge_recommendation: {
-      solution_1_score: 8.9,
-      solution_2_score: 7.8,
+      solution_1_score: 9.0,
+      solution_2_score: 0,
       solution_1_reasoning:
-        'Provides romanization, cultural context for word choice, and explains the adverb formation system. Correctly distinguishes "calmly" from "slowly." Minor: Tamil verb choice (ōṭukiṟatu = runs) is debatable for a river.',
+        'Response A directly identifies the operator bug, provides corrected code, and includes simple validation checks.',
       solution_2_reasoning:
-        'Good alternative vocabulary choices—*ozhugugiradu* and *prashaanthangaa* are arguably more natural. Bengali progressive form is linguistically interesting. Lacks romanization consistency and cultural/grammatical commentary.',
+        'Response B contains no output, so it cannot be evaluated for correctness or clarity.',
     },
   },
 
   {
     id: 'comp-3',
     problem: '',
-    solution_1: `## Devanagari vs. Tamil Script — Key Differences
+    solution_1: `## Reasoning: Which plan is cheaper?
 
-These two scripts represent fundamentally different design philosophies.
+Given:
+- Plan A: \`$12/month\`
+- Plan B: \`$90/year\`
 
-### 1. Script Type
+Convert Plan B to monthly cost:
 
-| Property | Devanagari | Tamil |
-|---|---|---|
-| Type | Abugida (alphasyllabary) | Abugida |
-| Direction | Left to right | Left to right |
-| Origin | Brahmi | Brahmi (via Grantha) |
+\`\`\`text
+$90 / 12 = $7.50 per month
+\`\`\`
 
-Both are Brahmi-derived, but they diverged significantly by the medieval period.
+Conclusion:
+- Plan B is cheaper by \`$4.50/month\`
+- Over a year, Plan A costs \`$144\`, so Plan B saves \`$54\`
 
-### 2. Consonant-Vowel System
+Recommendation: choose Plan B if you can commit annually.`,
 
-**Devanagari**: Each consonant has an inherent /a/ vowel that is suppressed using the *halant* ( ् ) marker. Vowel diacritics attach above, below, or around consonants (e.g., क ka → कि ki → के ke).
+    solution_2: `## Cost Comparison
 
-**Tamil**: Uses a more compact system. Each consonant has one base form; the 18 consonants combine with 12 vowels producing a grid of ~216 characters. The vowels substantially change consonant shape.
+Let's compare the totals for one year:
 
-### 3. Visual Character
+1. Plan A total: \`12 * 12 = $144\`
+2. Plan B total: \`$90\`
 
-- Devanagari has a distinctive **horizontal headline** (mātrā) connecting letters in a word
-- Tamil characters are **rounder**, historically carved into palm leaves where straight lines would split the leaf
+So Plan B is lower cost.
 
-### 4. Phoneme Inventory
-
-Devanagari encodes a larger phoneme set (~50+) including aspirated and retroflex distinctions. Tamil script maps to a smaller phoneme set (~30), with a single character sometimes representing multiple sounds (e.g., க் can be k, g, or h depending on position).`,
-
-    solution_2: `## Devanagari vs Tamil Script
-
-Both scripts are abugidas derived from ancient Brahmi, but they look and function quite differently.
-
-**Visual Style**: Devanagari is angular with horizontal bars at the top of each character called *shirorekha*. Tamil is notably rounded—historically because it was written on palm leaves, where angles could tear the material.
-
-**Phonemic Coverage**: Devanagari encodes more sounds, including aspirated consonants (ख, घ, छ) and the full retroflex series. Tamil has a more economical system—one consonant character can represent multiple phonemes, with context determining the exact sound.
-
-**Vowel Integration**: In both scripts, vowels attach to consonants as diacritics, but the mechanism differs. Tamil vowels can substantially alter the visual shape of the consonant. Devanagari vowels attach more predictably.
-
-**Script Exclusivity**: Devanagari is shared across Hindi, Marathi, Nepali, Sanskrit, Maithili, and more. Tamil script is used almost exclusively for Tamil (with minor use in Saurashtra and historical inscriptions).
-
-In summary: same ancient lineage, very different visual appearance, phonological philosophy, and geographic reach.`,
+Extra note: if cash flow is tight, Plan A spreads payments monthly, but it is still more expensive overall.`,
 
     judge_recommendation: {
-      solution_1_score: 9.1,
-      solution_2_score: 7.9,
+      solution_1_score: 8.1,
+      solution_2_score: 8.4,
       solution_1_reasoning:
-        'Exceptional use of a comparison table, accurate phoneme inventory numbers, clear explanation of the inherent vowel/halant system, and the palm leaf origin for Tamil roundness. Coverage is comprehensive.',
+        'Correct arithmetic and clear recommendation. Slightly verbose for a straightforward comparison.',
       solution_2_reasoning:
-        'Accurate and readable. The palm leaf explanation is present. Less structured but flows as readable prose. Misses the specific grid system detail (216 character combinations) which is important for Tamil script understanding.',
+        'Concise and correct. It includes a practical caveat about payment flexibility while keeping the answer focused.',
     },
+  },
+
+  {
+    id: 'comp-4',
+    problem: '',
+    solution_1: null,
+    solution_2: `## Summary in 3 bullets
+
+- The team launched a beta and collected user feedback.
+- Most users liked speed improvements, but reported onboarding confusion.
+- Next sprint should prioritize onboarding clarity while preserving performance gains.
+
+If needed, I can rewrite this for email or slide format.`,
+    model_1_failed: true,
+    judge_recommendation: null,
   },
 ];

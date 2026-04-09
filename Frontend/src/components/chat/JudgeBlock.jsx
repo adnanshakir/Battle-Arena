@@ -34,6 +34,24 @@ function Reasoning({ label, text }) {
 
 /* ── JudgeBlock ─────────────────────────────────────── */
 export function JudgeBlock({ judgeData }) {
+  const hasValidScores =
+    typeof judgeData?.solution_1_score === 'number' &&
+    typeof judgeData?.solution_2_score === 'number';
+
+  if (!hasValidScores) {
+    return (
+      <div className="border border-[#27272a] rounded-lg bg-[#111113] overflow-hidden">
+        <div className="px-4 py-3 border-b border-[#27272a] flex items-center gap-2">
+          <Scale size={14} className="text-subtle" />
+          <span className="text-sm font-semibold text-fg">Judge Evaluation</span>
+        </div>
+        <div className="p-4">
+          <p className="text-sm text-muted">Evaluation unavailable</p>
+        </div>
+      </div>
+    );
+  }
+
   const {
     solution_1_score,
     solution_2_score,
@@ -49,9 +67,9 @@ export function JudgeBlock({ judgeData }) {
         : null; // tie
 
   return (
-    <div className="border border-border rounded-lg bg-card overflow-hidden">
+    <div className="border border-[#27272a] rounded-lg bg-[#111113] overflow-hidden">
       {/* Header */}
-      <div className="px-4 py-3 border-b border-border flex items-center justify-between">
+      <div className="px-4 py-3 border-b border-[#27272a] flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Scale size={14} className="text-subtle" />
           <span className="text-sm font-semibold text-fg">Judge Evaluation</span>
@@ -62,7 +80,7 @@ export function JudgeBlock({ judgeData }) {
             <Trophy size={12} className="text-subtle" />
             <span className="text-xs text-subtle">
               Winner:{' '}
-              <span className="font-semibold text-fg">{winner}</span>
+              <span className="font-medium text-green-400">{winner}</span>
             </span>
           </div>
         ) : (

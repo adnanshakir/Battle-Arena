@@ -88,65 +88,89 @@ body {
 .prose h3,
 .prose h4 {
   font-weight: 600;
-  line-height: 1.3;
+  line-height: 1.35;
+  letter-spacing: -0.01em;
   color: var(--fg);
 }
 .prose h1 {
   font-size: 1.25rem;
-  margin-top: 1.25em;
-  margin-bottom: 0.5em;
+  margin-top: 1em;
+  margin-bottom: 0.55em;
 }
 .prose h2 {
-  font-size: 1.1rem;
-  margin-top: 1.25em;
-  margin-bottom: 0.5em;
+  font-size: 1.12rem;
+  font-weight: 600;
+  margin-top: 1.2em;
+  margin-bottom: 0.35em;
 }
 .prose h3 {
   font-size: 1rem;
-  margin-top: 1em;
+  margin-top: 0.9em;
   margin-bottom: 0.375em;
 }
 
 .prose p {
-  margin-bottom: 0.875em;
-  color: var(--fg-2);
+  margin-bottom: 0.95em;
+  color: #64748b;
   font-size: 0.9375rem;
-  line-height: 1.75;
+  line-height: 1.68;
+}
+
+.dark .prose p {
+  color: #a1a1aa;
 }
 
 .prose ul,
 .prose ol {
   padding-left: 1.5rem;
-  margin-bottom: 0.875em;
+  margin-bottom: 1em;
+  margin-top: 0.25em;
   color: var(--fg-2);
   font-size: 0.9375rem;
 }
 .prose li {
-  margin-bottom: 0.25em;
+  margin-bottom: 0.35em;
+}
+
+.prose li > p {
+  margin-bottom: 0.35em;
 }
 
 .prose code {
   font-size: 0.82em;
-  background: var(--muted-bg);
-  border: 1px solid var(--border);
+  background: #1f2937;
+  border: 1px solid #374151;
   border-radius: 4px;
-  padding: 0.1em 0.375em;
-  font-family: "JetBrains Mono", "Fira Code", ui-monospace, monospace;
-  color: var(--fg);
+  padding: 0.15em 0.4em;
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  color: #e5e7eb;
 }
 
 .prose pre {
-  background: var(--muted-bg);
+  background: var(--card);
   border: 1px solid var(--border);
   border-radius: 8px;
-  padding: 1rem;
+  padding: 0;
   overflow-x: auto;
-  margin-bottom: 0.875em;
+  margin: 1rem 0;
 }
+
+
 .prose pre code {
   background: none;
   border: none;
   padding: 0;
+  display: block;
+  font-size: 0.85rem;
+  line-height: 1.6;
+  color: inherit;
+}
+
+.prose p,
+.prose li,
+.prose td,
+.prose th {
+  overflow-wrap: anywhere;
 }
 
 .prose blockquote {
