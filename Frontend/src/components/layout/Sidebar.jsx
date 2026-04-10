@@ -1,5 +1,5 @@
 import React from 'react';
-import { Plus, MessageSquare, X, Clock, Bot } from 'lucide-react';
+import { Plus, MessageSquare, X, Bot } from 'lucide-react';
 import { Button } from '../ui/Button';
 import { truncate } from '../../utils/helpers';
 
@@ -93,9 +93,6 @@ export function Sidebar({
                       <p className="text-xs font-medium leading-snug truncate">
                         {truncate(item.query, 44)}
                       </p>
-                      <div className="flex items-center gap-1 mt-1">
-                        <Clock size={10} className="opacity-40" />
-                      </div>
                     </div>
                   </button>
                 </li>

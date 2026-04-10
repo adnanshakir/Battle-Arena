@@ -1,6 +1,7 @@
 import express from "express";
-import useGraph from "./services/graph.ai.service.js";
 import cors from "cors";
+import invokeRouter from "./routes/invoke.route.js";
+import { errorHandler } from "./middlewares/error-handler.middleware.js";
 
 const app = express();
 app.use(express.json());
@@ -10,21 +11,16 @@ app.use(cors({
   methods: ["GET", "POST"],
 }));
 
-app.post("/", async (req, res) => {
-  const result = await useGraph("Write an factorial function in javascript?");
+// Keep app bootstrap focused on global middleware and router registration.
+app.use("/invoke", invokeRouter);
 
-  res.json(result);
+app.use((_, res) => {
+  res.status(404).json({
+    success: false,
+    message: "Route not found",
+  });
 });
 
-app.post("/invoke", async (req, res) =>{
-  const { input } = req.body;
-  const result = await useGraph(input);
-
-  res.status(200).json({
-    result,
-    message: "Request processed successfully",
-    success: true,
-  });
-})
+app.use(errorHandler);
 
 export default app;

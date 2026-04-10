@@ -52,7 +52,19 @@ export default function App() {
         };
 
         setHistory((prev) => [chatItem, ...prev]);
-        setCurrentChat(chatItem);
+        setCurrentChat((prev) => {
+          if (!prev) {
+            return {
+              id: generateId(),
+              messages: [newMessage],
+            };
+          }
+
+          return {
+            ...prev,
+            messages: [...prev.messages, newMessage],
+          };
+        });
         setPendingQuery("");
       } catch (error) {
         console.error("Error during submission:", error);
