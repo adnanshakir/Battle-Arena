@@ -95,7 +95,6 @@ export function Sidebar({
                       </p>
                       <div className="flex items-center gap-1 mt-1">
                         <Clock size={10} className="opacity-40" />
-                        <span className="text-[10px] opacity-50">{item.timeLabel}</span>
                       </div>
                     </div>
                   </button>

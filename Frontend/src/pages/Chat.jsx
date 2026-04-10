@@ -3,7 +3,6 @@ import { ResponseCard } from '../components/chat/ResponseCard';
 import { JudgeBlock } from '../components/chat/JudgeBlock';
 import { MessageInput } from '../components/chat/MessageInput';
 
-const MODEL_TAGS = ['mistral-medium-flash', 'cohere-a-03-2025'];
 
 export function Chat({ chatData, pendingQuery, onSubmit, loading }) {
   const responsesRef = useRef(null);
@@ -38,14 +37,12 @@ export function Chat({ chatData, pendingQuery, onSubmit, loading }) {
           <div ref={responsesRef} className="grid grid-cols-1 md:grid-cols-2 gap-5 items-start">
             <ResponseCard
               label="Model A"
-              modelTag={MODEL_TAGS[0]}
               content={data?.solution_1}
               failed={Boolean(data?.model_1_failed)}
               loading={loading}
             />
             <ResponseCard
               label="Model B"
-              modelTag={MODEL_TAGS[1]}
               content={data?.solution_2}
               failed={Boolean(data?.model_2_failed)}
               loading={loading}
