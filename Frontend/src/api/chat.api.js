@@ -8,6 +8,10 @@ export const getJudgeAPI = (payload) => {
   return apiClient.post("/invoke/judge", payload);
 };
 
+export const getChatsAPI = () => {
+  return apiClient.get("/chat");
+};
+
 export const deleteChatAPI = (chatId) => {
   return apiClient.delete(`/chat/${chatId}`);
 };

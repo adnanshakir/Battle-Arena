@@ -3,6 +3,21 @@ import Chat from "../models/chat.model.js";
 import { asyncHandler } from "../utils/async-handler.js";
 import { AppError } from "../utils/app-error.js";
 
+export const getChatsController = asyncHandler(
+  async (req: Request, res: Response): Promise<void> => {
+    if (!req.user?.userId) {
+      throw new AppError("Unauthorized", 401);
+    }
+
+    const chats = await Chat.find({ userId: req.user.userId }).sort({ createdAt: -1 });
+
+    res.status(200).json({
+      success: true,
+      chats,
+    });
+  },
+);
+
 export const deleteChatController = asyncHandler(
   async (req: Request, res: Response): Promise<void> => {
     const { id } = req.params;

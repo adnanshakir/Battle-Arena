@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { Sidebar } from "./components/layout/Sidebar";
 import { Header } from "./components/layout/Header";
 import { Home } from "./pages/Home";
@@ -6,7 +6,12 @@ import { Chat } from "./pages/Chat";
 import { useTheme } from "./hooks/useTheme";
 import { useSidebar } from "./hooks/useSidebar";
 import { generateId } from "./utils/helpers";
-import { deleteChatAPI, getJudgeAPI, getSolutionsAPI } from "./api/chat.api";
+import {
+  deleteChatAPI,
+  getChatsAPI,
+  getJudgeAPI,
+  getSolutionsAPI,
+} from "./api/chat.api";
 import { useAuth } from "./hooks/useAuth";
 
 export default function App() {
@@ -20,6 +25,43 @@ export default function App() {
   const [history, setHistory] = useState([]);
   const [loading, setLoading] = useState(false);
   const [pendingQuery, setPendingQuery] = useState("");
+
+  useEffect(() => {
+    const loadChats = async () => {
+      if (!user) return;
+
+      try {
+        const res = await getChatsAPI();
+        const chats = res?.data?.chats || [];
+
+        const formatted = chats.map((c) => ({
+          id: c._id,
+          query: c.query,
+          data: {
+            solution_1: c.solution_1,
+            solution_2: c.solution_2,
+            judge_recommendation: c.judge_recommendation,
+            model_1_failed: !c.solution_1,
+            model_2_failed: !c.solution_2,
+          },
+        }));
+
+        setHistory(formatted);
+      } catch (err) {
+        console.error("Failed to load chats", err);
+      }
+    };
+
+    loadChats();
+  }, [user]);
+
+  useEffect(() => {
+    if (!user) {
+      setHistory([]);
+      setCurrentChat(null);
+      setView("home");
+    }
+  }, [user]);
 
   /* ── Handle new query submission ─────────────────── */
   const handleSubmit = useCallback(
