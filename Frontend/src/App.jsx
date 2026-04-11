@@ -23,13 +23,16 @@ export default function App() {
   const [view, setView] = useState("home");
   const [currentChat, setCurrentChat] = useState(null);
   const [history, setHistory] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [solutionsLoading, setSolutionsLoading] = useState(false);
+  const [judgeLoading, setJudgeLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [toast, setToast] = useState(null);
   const [pendingQuery, setPendingQuery] = useState("");
 
   useEffect(() => {
-    const loadChats = async () => {
-      if (!user) return;
+    if (!user) return;
 
+    const loadChats = async () => {
       try {
         const res = await getChatsAPI();
         const chats = res?.data?.chats || [];
@@ -38,17 +41,19 @@ export default function App() {
           id: c._id,
           query: c.query,
           data: {
-            solution_1: c.solution_1,
-            solution_2: c.solution_2,
-            judge_recommendation: c.judge_recommendation,
+            solution_1: c.solution_1 || "",
+            solution_2: c.solution_2 || "",
+            judge_recommendation: c.judge_recommendation || null,
             model_1_failed: !c.solution_1,
             model_2_failed: !c.solution_2,
+            judge_error: null,
           },
         }));
 
         setHistory(formatted);
-      } catch (err) {
-        console.error("Failed to load chats", err);
+      } catch {
+        // fallback silently (guest mode safety)
+        setHistory([]);
       }
     };
 
@@ -60,6 +65,10 @@ export default function App() {
       setHistory([]);
       setCurrentChat(null);
       setView("home");
+      setJudgeLoading(false);
+      setSolutionsLoading(false);
+      setPendingQuery("");
+      setError(null);
     }
   }, [user]);
 
@@ -67,7 +76,9 @@ export default function App() {
   const handleSubmit = useCallback(
     async (query) => {
       try {
-        setLoading(true);
+        setSolutionsLoading(true);
+        setJudgeLoading(false);
+        setError(null);
         setPendingQuery(query);
         setView("chat");
 
@@ -75,10 +86,11 @@ export default function App() {
         const result = res?.data?.result || {};
         const chatId = result.chatId;
 
-        const baseData = {
-          solution_1: result.solution_1,
-          solution_2: result.solution_2,
-          judge_recommendation: null,
+        const formattedData = {
+          solution_1: result.solution_1 || "",
+          solution_2: result.solution_2 || "",
+          judge_recommendation: result.judge_recommendation || null,
+          judge_error: null,
           model_1_failed: !result.solution_1,
           model_2_failed: !result.solution_2,
         };
@@ -86,21 +98,28 @@ export default function App() {
         const chatItem = {
           id: chatId || generateId(),
           query,
-          data: baseData,
+          data: formattedData,
         };
 
         setCurrentChat(chatItem);
         setHistory((prev) => [chatItem, ...prev]);
         setPendingQuery("");
-        setLoading(false);
+        setSolutionsLoading(false);
+        setJudgeLoading(true);
 
         if (result.solution_1 && result.solution_2) {
-          getJudgeAPI({
+          const judgePromise = getJudgeAPI({
             input: query,
             solution_1: result.solution_1,
             solution_2: result.solution_2,
             chatId,
-          })
+          });
+
+          const timeoutPromise = new Promise((_, reject) => {
+            setTimeout(() => reject(new Error("Judge timeout")), 15000);
+          });
+
+          Promise.race([judgePromise, timeoutPromise])
             .then((judgeRes) => {
               const judge = judgeRes?.data?.result;
 
@@ -111,6 +130,7 @@ export default function App() {
                   data: {
                     ...prev.data,
                     judge_recommendation: judge,
+                    judge_error: null,
                   },
                 };
               });
@@ -123,24 +143,65 @@ export default function App() {
                         data: {
                           ...item.data,
                           judge_recommendation: judge,
+                          judge_error: null,
                         },
                       }
                     : item,
                 ),
               );
+
+              setJudgeLoading(false);
             })
-            .catch((err) => {
-              console.error("Judge failed:", err);
+            .catch(() => {
+              setJudgeLoading(false);
+
+              setCurrentChat((prev) => {
+                if (!prev || prev.id !== chatItem.id) return prev;
+                return {
+                  ...prev,
+                  data: {
+                    ...prev.data,
+                    judge_recommendation: null,
+                    judge_error: "Taking too long to evaluate",
+                  },
+                };
+              });
+
+              setHistory((prev) =>
+                prev.map((item) =>
+                  item.id === chatItem.id
+                    ? {
+                        ...item,
+                        data: {
+                          ...item.data,
+                          judge_recommendation: null,
+                          judge_error: "Taking too long to evaluate",
+                        },
+                      }
+                    : item,
+                ),
+              );
+
+              setToast("Request timed out. Try again.");
+              setTimeout(() => setToast(null), 3000);
             });
+        } else {
+          setJudgeLoading(false);
         }
       } catch (error) {
+        setSolutionsLoading(false);
+        setJudgeLoading(false);
+        setError("Something went wrong. Please try again.");
         if (error?.response?.status === 408) {
           console.error("Request timeout - models too slow");
+          setToast("Request timed out. Try again.");
         } else {
           console.error("Error during submission:", error);
+          setToast("Something went wrong. Please try again.");
         }
+
+        setTimeout(() => setToast(null), 3000);
         setPendingQuery("");
-        setLoading(false);
       }
 
       if (isMobile) close();
@@ -220,17 +281,30 @@ export default function App() {
         {/* Page area */}
         <main className="flex-1 flex flex-col min-h-0 overflow-hidden">
           {view === "home" ? (
-            <Home onSubmit={handleSubmit} loading={loading} />
+            <Home onSubmit={handleSubmit} loading={solutionsLoading} />
           ) : (
             <Chat
               chatData={currentChat}
               pendingQuery={pendingQuery}
               onSubmit={handleSubmit}
-              loading={loading}
+              loading={solutionsLoading}
+              judgeLoading={judgeLoading}
             />
           )}
         </main>
       </div>
+
+      {toast && (
+        <div className="fixed top-4 right-4 text-xs bg-card border border-border px-3 py-2 rounded-md shadow-sm z-50">
+          {toast}
+        </div>
+      )}
+
+      {error && (
+        <div className="sr-only" aria-live="polite">
+          {error}
+        </div>
+      )}
     </div>
   );
 }

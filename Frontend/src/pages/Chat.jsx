@@ -4,7 +4,7 @@ import { JudgeBlock } from '../components/chat/JudgeBlock';
 import { MessageInput } from '../components/chat/MessageInput';
 
 
-export function Chat({ chatData, pendingQuery, onSubmit, loading }) {
+export function Chat({ chatData, pendingQuery, onSubmit, loading, judgeLoading }) {
   const responsesRef = useRef(null);
 
   const query = chatData?.query ?? pendingQuery ?? '';
@@ -53,6 +53,8 @@ export function Chat({ chatData, pendingQuery, onSubmit, loading }) {
           {!loading && (
             <JudgeBlock
               judgeData={data?.judge_recommendation}
+              judgeLoading={judgeLoading}
+              judgeError={data?.judge_error}
               model1Failed={Boolean(data?.model_1_failed)}
               model2Failed={Boolean(data?.model_2_failed)}
             />

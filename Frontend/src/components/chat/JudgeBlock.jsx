@@ -56,14 +56,29 @@ function Reasoning({ label, text }) {
 }
 
 /* ── JudgeBlock ─────────────────────────────────────── */
-export function JudgeBlock({ judgeData, model1Failed = false, model2Failed = false }) {
-  const hasValidScores =
-    typeof judgeData?.solution_1_score === 'number' &&
-    typeof judgeData?.solution_2_score === 'number';
-
+export function JudgeBlock({
+  judgeData,
+  judgeLoading = false,
+  model1Failed = false,
+  model2Failed = false,
+}) {
   const anyModelFailed = model1Failed || model2Failed;
 
-  if (!hasValidScores) {
+  if (judgeLoading) {
+    return (
+      <div className="border border-border rounded-lg bg-card overflow-hidden">
+        <div className="px-4 py-3 border-b border-border flex items-center gap-2">
+          <Scale size={18} className="text-subtle" />
+          <span className="text-sm font-semibold text-fg">Judge Evaluation</span>
+        </div>
+        <div className="p-4">
+          <p className="text-sm text-muted">Evaluating responses...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!judgeData) {
     return (
       <div className="border border-border rounded-lg bg-card overflow-hidden">
         <div className="px-4 py-3 border-b border-border flex items-center gap-2">
@@ -79,14 +94,26 @@ export function JudgeBlock({ judgeData, model1Failed = false, model2Failed = fal
               </p>
             </>
           ) : (
-            <>
-              <p className="text-sm text-muted">Evaluating responses...</p>
-              <div className="mt-3 space-y-2 animate-pulse" aria-hidden="true">
-                <div className="h-3 w-3/5 rounded bg-muted-bg" />
-                <div className="h-3 w-4/5 rounded bg-muted-bg" />
-              </div>
-            </>
+            <p className="text-sm text-muted">Taking too long to evaluate responses</p>
           )}
+        </div>
+      </div>
+    );
+  }
+
+  const hasValidScores =
+    typeof judgeData?.solution_1_score === 'number' &&
+    typeof judgeData?.solution_2_score === 'number';
+
+  if (!hasValidScores) {
+    return (
+      <div className="border border-border rounded-lg bg-card overflow-hidden">
+        <div className="px-4 py-3 border-b border-border flex items-center gap-2">
+          <Scale size={18} className="text-subtle" />
+          <span className="text-sm font-semibold text-fg">Judge Evaluation</span>
+        </div>
+        <div className="p-4">
+          <p className="text-sm text-muted">Taking too long to evaluate responses</p>
         </div>
       </div>
     );
