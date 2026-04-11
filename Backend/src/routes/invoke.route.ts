@@ -1,9 +1,13 @@
 import { Router } from "express";
-import { invokeController } from "../controllers/invoke.controller.js";
+import {
+	judgeController,
+	solutionsController,
+} from "../controllers/invoke.controller.js";
 
 const invokeRouter = Router();
 
 // Route module exists so app bootstrap stays focused on app-wide concerns only.
-invokeRouter.post("/", invokeController);
+invokeRouter.post("/solutions", solutionsController);
+invokeRouter.post("/judge", judgeController);
 
 export default invokeRouter;

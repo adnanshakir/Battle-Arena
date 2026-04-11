@@ -1,5 +1,5 @@
 import React from 'react';
-import { Plus, MessageSquare, X, Bot } from 'lucide-react';
+import { Plus, MessageSquare, X, Bot, Trash2 } from 'lucide-react';
 import { Button } from '../ui/Button';
 import { truncate } from '../../utils/helpers';
 
@@ -9,9 +9,11 @@ export function Sidebar({
   onClose,
   history,
   showLoginHint,
+  user,
   currentId,
   onSelectChat,
   onNewChat,
+  onDeleteChat,
 }) {
   return (
     <>
@@ -86,23 +88,39 @@ export function Sidebar({
             <ul className="space-y-0.5 px-2">
               {history.map((item) => (
                 <li key={item.id}>
-                  <button
-                    onClick={() => onSelectChat(item.id)}
+                  <div
                     className={[
-                      'w-full flex items-start gap-2.5 px-3 py-2.5 rounded-md text-left',
+                      'group w-full flex items-start gap-2 px-2 py-1.5 rounded-md',
                       'transition-colors duration-100',
                       currentId === item.id
                         ? 'bg-muted-bg text-accent'
                         : 'text-subtle hover:bg-muted-bg hover:text-fg',
                     ].join(' ')}
                   >
-                    <MessageSquare size={13} className="mt-0.5 shrink-0 opacity-60" />
-                    <div className="min-w-0 flex-1">
+                    <button
+                      onClick={() => onSelectChat(item.id)}
+                      className="flex-1 flex items-start gap-2.5 px-1 py-1 text-left min-w-0"
+                    >
+                      <MessageSquare size={13} className="mt-0.5 shrink-0 opacity-60" />
                       <p className="text-xs font-medium leading-snug truncate">
                         {truncate(item.query, 44)}
                       </p>
-                    </div>
-                  </button>
+                    </button>
+
+                    {user && (
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onDeleteChat(item.id);
+                        }}
+                        className="opacity-0 group-hover:opacity-100 transition-opacity p-1 rounded hover:bg-fg/10"
+                        title="Delete chat"
+                        aria-label="Delete chat"
+                      >
+                        <Trash2 size={14} />
+                      </button>
+                    )}
+                  </div>
                 </li>
               ))}
             </ul>

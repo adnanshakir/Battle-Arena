@@ -6,7 +6,7 @@ import { Chat } from "./pages/Chat";
 import { useTheme } from "./hooks/useTheme";
 import { useSidebar } from "./hooks/useSidebar";
 import { generateId } from "./utils/helpers";
-import { invokeAPI } from "./api/chat.api";
+import { deleteChatAPI, getJudgeAPI, getSolutionsAPI } from "./api/chat.api";
 import { useAuth } from "./hooks/useAuth";
 
 export default function App() {
@@ -29,40 +29,79 @@ export default function App() {
         setPendingQuery(query);
         setView("chat");
 
-        const response = await invokeAPI(query);
-        const { data } = response;
+        const res = await getSolutionsAPI(query);
+        const result = res?.data?.result || {};
+        const chatId = result.chatId;
 
-        const result = data.result;
-
-        const formattedData = {
+        const baseData = {
           solution_1: result.solution_1,
           solution_2: result.solution_2,
-          judge_recommendation: result.judge_recommendation || {
-            solution_1_score: 0,
-            solution_2_score: 0,
-            solution_1_reasoning: "",
-            solution_2_reasoning: "",
-          },
+          judge_recommendation: null,
           model_1_failed: !result.solution_1,
           model_2_failed: !result.solution_2,
         };
 
         const chatItem = {
-          id: generateId(),
+          id: chatId || generateId(),
           query,
-          data: formattedData,
+          data: baseData,
         };
 
-        setHistory((prev) => [chatItem, ...prev]);
         setCurrentChat(chatItem);
+        setHistory((prev) => [chatItem, ...prev]);
         setPendingQuery("");
-      } catch (error) {
-        console.error("Error during submission:", error);
-        setPendingQuery("");
-      } finally {
         setLoading(false);
-        if (isMobile) close();
+
+        if (result.solution_1 && result.solution_2) {
+          getJudgeAPI({
+            input: query,
+            solution_1: result.solution_1,
+            solution_2: result.solution_2,
+            chatId,
+          })
+            .then((judgeRes) => {
+              const judge = judgeRes?.data?.result;
+
+              setCurrentChat((prev) => {
+                if (!prev || prev.id !== chatItem.id) return prev;
+                return {
+                  ...prev,
+                  data: {
+                    ...prev.data,
+                    judge_recommendation: judge,
+                  },
+                };
+              });
+
+              setHistory((prev) =>
+                prev.map((item) =>
+                  item.id === chatItem.id
+                    ? {
+                        ...item,
+                        data: {
+                          ...item.data,
+                          judge_recommendation: judge,
+                        },
+                      }
+                    : item,
+                ),
+              );
+            })
+            .catch((err) => {
+              console.error("Judge failed:", err);
+            });
+        }
+      } catch (error) {
+        if (error?.response?.status === 408) {
+          console.error("Request timeout - models too slow");
+        } else {
+          console.error("Error during submission:", error);
+        }
+        setPendingQuery("");
+        setLoading(false);
       }
+
+      if (isMobile) close();
     },
     [isMobile, close],
   );
@@ -87,6 +126,24 @@ export default function App() {
     if (isMobile) close();
   }, [isMobile, close]);
 
+  const handleDeleteChat = useCallback(
+    async (chatId) => {
+      try {
+        await deleteChatAPI(chatId);
+
+        setHistory((prev) => prev.filter((c) => c.id !== chatId));
+
+        if (currentChat?.id === chatId) {
+          setCurrentChat(null);
+          setView("home");
+        }
+      } catch (err) {
+        console.error("Delete failed:", err);
+      }
+    },
+    [currentChat],
+  );
+
   /* ── Sidebar offset on desktop ───────────────────── */
   const sidebarWidth = isMobile ? 0 : isOpen ? 256 : 0;
 
@@ -99,9 +156,11 @@ export default function App() {
         onClose={close}
         history={user ? history : []}
         showLoginHint={!user}
+        user={user}
         currentId={currentChat?.id}
         onSelectChat={handleSelectChat}
         onNewChat={handleNewChat}
+        onDeleteChat={handleDeleteChat}
       />
 
       {/* ── Main column ─────────────────────────────── */}

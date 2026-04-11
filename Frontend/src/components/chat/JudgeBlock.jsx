@@ -56,10 +56,12 @@ function Reasoning({ label, text }) {
 }
 
 /* ── JudgeBlock ─────────────────────────────────────── */
-export function JudgeBlock({ judgeData }) {
+export function JudgeBlock({ judgeData, model1Failed = false, model2Failed = false }) {
   const hasValidScores =
     typeof judgeData?.solution_1_score === 'number' &&
     typeof judgeData?.solution_2_score === 'number';
+
+  const anyModelFailed = model1Failed || model2Failed;
 
   if (!hasValidScores) {
     return (
@@ -69,7 +71,22 @@ export function JudgeBlock({ judgeData }) {
           <span className="text-sm font-semibold text-fg">Judge Evaluation</span>
         </div>
         <div className="p-4">
-          <p className="text-sm text-muted">Evaluation unavailable</p>
+          {anyModelFailed ? (
+            <>
+              <p className="text-sm text-muted">One or more model responses failed.</p>
+              <p className="text-xs text-muted mt-1 opacity-80">
+                Judge scoring may be unavailable until both model responses succeed.
+              </p>
+            </>
+          ) : (
+            <>
+              <p className="text-sm text-muted">Evaluating responses...</p>
+              <div className="mt-3 space-y-2 animate-pulse" aria-hidden="true">
+                <div className="h-3 w-3/5 rounded bg-muted-bg" />
+                <div className="h-3 w-4/5 rounded bg-muted-bg" />
+              </div>
+            </>
+          )}
         </div>
       </div>
     );

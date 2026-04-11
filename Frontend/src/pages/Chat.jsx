@@ -50,13 +50,19 @@ export function Chat({ chatData, pendingQuery, onSubmit, loading }) {
           </div>
 
           {/* Judge section */}
-          {!loading && <JudgeBlock judgeData={data?.judge_recommendation} />}
+          {!loading && (
+            <JudgeBlock
+              judgeData={data?.judge_recommendation}
+              model1Failed={Boolean(data?.model_1_failed)}
+              model2Failed={Boolean(data?.model_2_failed)}
+            />
+          )}
 
         </div>
       </div>
 
       {/* Fixed bottom input */}
-      <div className="flex-shrink-0 border-t border-border bg-surface/95 backdrop-blur-sm">
+      <div className="shrink-0 border-t border-border bg-surface/95 backdrop-blur-sm">
         <div className="max-w-6xl mx-auto px-4 py-3 md:py-3.5">
           <MessageInput
             onSubmit={onSubmit}

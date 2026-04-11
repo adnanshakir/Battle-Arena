@@ -1,5 +1,13 @@
 import { apiClient } from "./auth.api";
 
-export const invokeAPI = (input) => {
-  return apiClient.post("/invoke", { input });
+export const getSolutionsAPI = (input) => {
+  return apiClient.post("/invoke/solutions", { input });
+};
+
+export const getJudgeAPI = (payload) => {
+  return apiClient.post("/invoke/judge", payload);
+};
+
+export const deleteChatAPI = (chatId) => {
+  return apiClient.delete(`/chat/${chatId}`);
 };
