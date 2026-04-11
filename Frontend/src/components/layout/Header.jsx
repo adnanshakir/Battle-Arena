@@ -23,7 +23,7 @@ export function Header({ isOpen, onToggleSidebar, theme, onToggleTheme }) {
       {/* Left */}
       <div className="flex items-center gap-3 min-w-0">
         <Button
-          variant="ghost"
+          variant="secondary"
           size="icon"
           onClick={onToggleSidebar}
           aria-label={isOpen ? 'Collapse sidebar' : 'Open sidebar'}
@@ -40,7 +40,7 @@ export function Header({ isOpen, onToggleSidebar, theme, onToggleTheme }) {
       {/* Right */}
       <div className="flex items-center gap-1">
         <Button
-          variant="ghost"
+          variant="default"
           size="sm"
           onClick={handleAuthAction}
           aria-label={user ? 'Logout' : 'Login'}

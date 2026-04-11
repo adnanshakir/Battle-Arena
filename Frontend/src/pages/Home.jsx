@@ -11,8 +11,8 @@ const SUGGESTED = [
 
 export function Home({ onSubmit, loading }) {
   return (
-    <div className="flex-1 flex items-center justify-center px-4 py-12 overflow-y-auto">
-      <div className="w-full max-w-150 space-y-5">
+    <div className="min-h-full bg-surface relative flex items-center justify-center p-4 overflow-y-auto">
+      <div className="w-full max-w-150 space-y-5 py-8">
         {/* Hero */}
         <div className="text-center space-y-2">
           <div className="inline-flex items-center justify-center rounded-md p-1">

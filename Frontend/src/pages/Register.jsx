@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Eye, EyeOff } from 'lucide-react';
+import { Bot, Eye, EyeOff } from 'lucide-react';
 import { Card } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
 import { useAuth } from '../hooks/useAuth';
@@ -31,12 +31,19 @@ export function Register() {
   };
 
   return (
-    <div className="min-h-full bg-surface flex items-center justify-center p-4">
+    <div className="min-h-full bg-surface relative flex items-center justify-center p-4">
       <Card className="w-full max-w-md p-6">
-        <h1 className="text-xl font-semibold text-fg">Create account</h1>
-        <p className="text-sm text-muted mt-1">Register to save your comparisons</p>
+        <div className="flex items-center gap-2 mb-3">
+          <Bot className="text-accent" size={20} />
+          <span className="text-sm text-subtle">Verdict</span>
+        </div>
 
-        <form className="mt-5 space-y-3" onSubmit={handleSubmit}>
+        <h1 className="text-xl font-semibold text-fg">Create account</h1>
+        <p className="text-sm text-muted mt-1">
+          Start comparing AI responses with clarity.
+        </p>
+
+        <form className="mt-6 space-y-4" onSubmit={handleSubmit}>
           <input
             type="email"
             value={email}
@@ -70,16 +77,26 @@ export function Register() {
 
           {error ? <p className="text-xs text-red-500">{error}</p> : null}
 
-          <Button type="submit" className="w-full" disabled={loading}>
+          <Button type="submit" className="w-full font-medium" disabled={loading}>
             {loading ? 'Registering...' : 'Register'}
           </Button>
         </form>
+
+        <div className="text-xs text-muted mt-4 border border-border rounded-md p-3 bg-muted-bg/40 space-y-1">
+          <p>• Compare multiple AI responses side-by-side</p>
+          <p>• Get structured evaluation instantly</p>
+          <p>• Save and revisit your past comparisons</p>
+        </div>
 
         <p className="text-sm text-muted mt-4 text-center">
           Already have an account?{' '}
           <Link to="/login" className="text-fg underline underline-offset-2">
             Login
           </Link>
+        </p>
+
+        <p className="text-[11px] text-muted mt-4 text-center">
+          Your data is private. Only you can access your saved comparisons.
         </p>
       </Card>
     </div>
