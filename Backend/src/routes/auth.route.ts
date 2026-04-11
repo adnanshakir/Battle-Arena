@@ -1,9 +1,20 @@
 import { Router } from "express";
-import { login, register } from "../controllers/auth.controller.js";
+import {
+	getMeController,
+	loginController,
+	logoutController,
+	registerController,
+} from "../controllers/auth.controller.js";
+import { authMiddleware } from "../middlewares/auth.middleware.js";
 
 const authRouter = Router();
 
-authRouter.post("/register", register);
-authRouter.post("/login", login);
+authRouter.post("/register", registerController);
+authRouter.post("/login", loginController);
+
+// Optional auth; guests must still be allowed.
+authRouter.get("/me", authMiddleware, getMeController);
+
+authRouter.post("/logout", logoutController);
 
 export default authRouter;

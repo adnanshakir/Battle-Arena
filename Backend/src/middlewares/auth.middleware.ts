@@ -8,13 +8,31 @@ type JwtPayload = { userId: string };
  */
 export const authMiddleware = (req: Request, _res: Response, next: NextFunction): void => {
   const authHeader = req.headers.authorization;
+  const cookieHeader = req.headers.cookie;
 
-  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+  let token: string | null = null;
+
+  if (cookieHeader) {
+    const tokenCookie = cookieHeader
+      .split(";")
+      .map((segment) => segment.trim())
+      .find((segment) => segment.startsWith("token="));
+
+    if (tokenCookie) {
+      const rawValue = tokenCookie.slice("token=".length);
+      token = decodeURIComponent(rawValue);
+    }
+  }
+
+  if (!token && authHeader?.startsWith("Bearer ")) {
+    token = authHeader.slice(7).trim();
+  }
+
+  if (!token) {
     next();
     return;
   }
 
-  const token = authHeader.slice(7).trim();
   const secret = process.env.JWT_SECRET;
 
   if (!secret) {

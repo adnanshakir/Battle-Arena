@@ -8,6 +8,7 @@ export function Sidebar({
   isMobile,
   onClose,
   history,
+  showLoginHint,
   currentId,
   onSelectChat,
   onNewChat,
@@ -35,7 +36,7 @@ export function Sidebar({
         aria-label="Sidebar"
       >
         {/* Header */}
-        <div className="h-14 flex items-center justify-between px-4 border-b border-border flex-shrink-0">
+        <div className="h-14 flex items-center justify-between px-4 border-b border-border shrink-0">
           <div className="flex items-center gap-2">
             <Bot size={18} className="text-accent" />
             <span className="text-sm font-semibold text-fg tracking-tight">
@@ -53,7 +54,7 @@ export function Sidebar({
         </div>
 
         {/* New comparison button */}
-        <div className="p-3 border-b border-border flex-shrink-0">
+        <div className="p-3 border-b border-border shrink-0">
           <Button
             variant="outline"
             className="w-full justify-start"
@@ -67,7 +68,14 @@ export function Sidebar({
 
         {/* History */}
         <nav className="flex-1 overflow-y-auto py-2" aria-label="Chat history">
-          {history.length === 0 ? (
+          {showLoginHint ? (
+            <div className="px-4 py-10 text-center">
+              <p className="text-xs text-muted">Login to save chats</p>
+              <p className="text-[11px] text-muted mt-1 opacity-60">
+                You can still chat as a guest
+              </p>
+            </div>
+          ) : history.length === 0 ? (
             <div className="px-4 py-10 text-center">
               <p className="text-xs text-muted">No comparisons yet</p>
               <p className="text-[11px] text-muted mt-1 opacity-60">
@@ -88,7 +96,7 @@ export function Sidebar({
                         : 'text-subtle hover:bg-muted-bg hover:text-fg',
                     ].join(' ')}
                   >
-                    <MessageSquare size={13} className="mt-0.5 flex-shrink-0 opacity-60" />
+                    <MessageSquare size={13} className="mt-0.5 shrink-0 opacity-60" />
                     <div className="min-w-0 flex-1">
                       <p className="text-xs font-medium leading-snug truncate">
                         {truncate(item.query, 44)}
@@ -102,7 +110,7 @@ export function Sidebar({
         </nav>
 
         {/* Footer */}
-        <div className="p-4 border-t border-border flex-shrink-0">
+        <div className="p-4 border-t border-border shrink-0">
           <p className="text-[10px] text-muted text-center leading-relaxed">
             Compare answers. Get a clear verdict.
           </p>

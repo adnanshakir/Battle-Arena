@@ -6,9 +6,11 @@ import { Chat } from "./pages/Chat";
 import { useTheme } from "./hooks/useTheme";
 import { useSidebar } from "./hooks/useSidebar";
 import { generateId } from "./utils/helpers";
-import axios from "axios";
+import { invokeAPI } from "./api/chat.api";
+import { useAuth } from "./hooks/useAuth";
 
 export default function App() {
+  const { user } = useAuth();
   const { theme, toggleTheme } = useTheme();
   const { isOpen, isMobile, toggle, close } = useSidebar();
 
@@ -27,20 +29,20 @@ export default function App() {
         setPendingQuery(query);
         setView("chat");
 
-        const response = await axios.post("http://localhost:3000/invoke", {
-          input: query,
-        });
-
+        const response = await invokeAPI(query);
         const { data } = response;
-
-        console.log(data);
 
         const result = data.result;
 
         const formattedData = {
           solution_1: result.solution_1,
           solution_2: result.solution_2,
-          judge_recommendation: result.judge_recommendation,
+          judge_recommendation: result.judge_recommendation || {
+            solution_1_score: 0,
+            solution_2_score: 0,
+            solution_1_reasoning: "",
+            solution_2_reasoning: "",
+          },
           model_1_failed: !result.solution_1,
           model_2_failed: !result.solution_2,
         };
@@ -52,19 +54,7 @@ export default function App() {
         };
 
         setHistory((prev) => [chatItem, ...prev]);
-        setCurrentChat((prev) => {
-          if (!prev) {
-            return {
-              id: generateId(),
-              messages: [newMessage],
-            };
-          }
-
-          return {
-            ...prev,
-            messages: [...prev.messages, newMessage],
-          };
-        });
+        setCurrentChat(chatItem);
         setPendingQuery("");
       } catch (error) {
         console.error("Error during submission:", error);
@@ -107,7 +97,8 @@ export default function App() {
         isOpen={isOpen}
         isMobile={isMobile}
         onClose={close}
-        history={history}
+        history={user ? history : []}
+        showLoginHint={!user}
         currentId={currentChat?.id}
         onSelectChat={handleSelectChat}
         onNewChat={handleNewChat}
