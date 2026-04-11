@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { ArrowUp, Loader2 } from 'lucide-react';
 import { Button } from '../ui/Button';
 
-export function MessageInput({ onSubmit, loading = false, placeholder }) {
+export function MessageInput({ onSubmit, loading = false, disabled = false, placeholder }) {
   const [value, setValue] = useState('');
   const textareaRef = useRef(null);
 
@@ -16,7 +16,7 @@ export function MessageInput({ onSubmit, loading = false, placeholder }) {
 
   const handleSubmit = () => {
     const trimmed = value.trim();
-    if (!trimmed || loading) return;
+    if (!trimmed || loading || disabled) return;
     onSubmit(trimmed);
     setValue('');
   };
@@ -28,7 +28,8 @@ export function MessageInput({ onSubmit, loading = false, placeholder }) {
     }
   };
 
-  const canSubmit = value.trim().length > 0 && !loading;
+  const isBlocked = loading || disabled;
+  const canSubmit = value.trim().length > 0 && !isBlocked;
 
   return (
     <div
@@ -46,14 +47,14 @@ export function MessageInput({ onSubmit, loading = false, placeholder }) {
         onKeyDown={handleKeyDown}
         placeholder={placeholder ?? 'Ask coding, reasoning, or general questions'}
         rows={1}
-        disabled={loading}
+        disabled={isBlocked}
         aria-label="Query input"
         style={{ minHeight: '40px', maxHeight: '180px' }}
         className={[
           'flex-1 bg-transparent text-fg text-sm',
           'placeholder:text-muted outline-none resize-none',
           'py-2 leading-relaxed',
-          loading ? 'opacity-50 cursor-not-allowed' : '',
+          isBlocked ? 'opacity-50 cursor-not-allowed' : '',
         ].join(' ')}
       />
       <Button

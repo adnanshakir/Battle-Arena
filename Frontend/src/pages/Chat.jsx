@@ -4,7 +4,14 @@ import { JudgeBlock } from '../components/chat/JudgeBlock';
 import { MessageInput } from '../components/chat/MessageInput';
 
 
-export function Chat({ chatData, pendingQuery, onSubmit, loading, judgeLoading }) {
+export function Chat({
+  chatData,
+  pendingQuery,
+  onSubmit,
+  loading,
+  judgeLoading,
+  inputDisabled = false,
+}) {
   const responsesRef = useRef(null);
 
   const query = chatData?.query ?? pendingQuery ?? '';
@@ -69,6 +76,7 @@ export function Chat({ chatData, pendingQuery, onSubmit, loading, judgeLoading }
           <MessageInput
             onSubmit={onSubmit}
             loading={loading}
+            disabled={inputDisabled}
             placeholder="Ask coding, reasoning, or general questions"
           />
         </div>

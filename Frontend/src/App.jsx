@@ -75,6 +75,8 @@ export default function App() {
   /* ── Handle new query submission ─────────────────── */
   const handleSubmit = useCallback(
     async (query) => {
+      if (solutionsLoading || judgeLoading) return;
+
       try {
         setSolutionsLoading(true);
         setJudgeLoading(false);
@@ -115,13 +117,10 @@ export default function App() {
             chatId,
           });
 
-          const timeoutPromise = new Promise((_, reject) => {
-            setTimeout(() => reject(new Error("Judge timeout")), 15000);
-          });
-
-          Promise.race([judgePromise, timeoutPromise])
+          judgePromise
             .then((judgeRes) => {
               const judge = judgeRes?.data?.result;
+              if (!judge) return;
 
               setCurrentChat((prev) => {
                 if (!prev || prev.id !== chatItem.id) return prev;
@@ -153,38 +152,54 @@ export default function App() {
               setJudgeLoading(false);
             })
             .catch(() => {
-              setJudgeLoading(false);
-
               setCurrentChat((prev) => {
                 if (!prev || prev.id !== chatItem.id) return prev;
-                return {
-                  ...prev,
-                  data: {
-                    ...prev.data,
-                    judge_recommendation: null,
-                    judge_error: "Taking too long to evaluate",
-                  },
-                };
+                return prev;
               });
-
-              setHistory((prev) =>
-                prev.map((item) =>
-                  item.id === chatItem.id
-                    ? {
-                        ...item,
-                        data: {
-                          ...item.data,
-                          judge_recommendation: null,
-                          judge_error: "Taking too long to evaluate",
-                        },
-                      }
-                    : item,
-                ),
-              );
-
-              setToast("Request timed out. Try again.");
-              setTimeout(() => setToast(null), 3000);
+              setJudgeLoading(false);
             });
+
+          const timeoutPromise = new Promise((resolve) => {
+            setTimeout(() => resolve("timeout"), 15000);
+          });
+
+          await new Promise((r) => setTimeout(r, 0));
+
+          const raceResult = await Promise.race([judgePromise, timeoutPromise]);
+
+          if (raceResult === "timeout") {
+            setJudgeLoading(false);
+
+            setCurrentChat((prev) => {
+              if (!prev || prev.id !== chatItem.id) return prev;
+              return {
+                ...prev,
+                data: {
+                  ...prev.data,
+                  judge_recommendation: null,
+                  judge_error: "Taking too long to evaluate responses",
+                },
+              };
+            });
+
+            setHistory((prev) =>
+              prev.map((item) =>
+                item.id === chatItem.id
+                  ? {
+                      ...item,
+                      data: {
+                        ...item.data,
+                        judge_recommendation: null,
+                        judge_error: "Taking too long to evaluate responses",
+                      },
+                    }
+                  : item,
+              ),
+            );
+
+            setToast("Request timed out. Try again.");
+            setTimeout(() => setToast(null), 3000);
+          }
         } else {
           setJudgeLoading(false);
         }
@@ -206,7 +221,7 @@ export default function App() {
 
       if (isMobile) close();
     },
-    [isMobile, close],
+    [isMobile, close, judgeLoading, solutionsLoading],
   );
 
   /* ── Restore a previous comparison ───────────────── */
@@ -281,7 +296,11 @@ export default function App() {
         {/* Page area */}
         <main className="flex-1 flex flex-col min-h-0 overflow-hidden">
           {view === "home" ? (
-            <Home onSubmit={handleSubmit} loading={solutionsLoading} />
+            <Home
+              onSubmit={handleSubmit}
+              loading={solutionsLoading}
+              disabled={solutionsLoading || judgeLoading}
+            />
           ) : (
             <Chat
               chatData={currentChat}
@@ -289,6 +308,7 @@ export default function App() {
               onSubmit={handleSubmit}
               loading={solutionsLoading}
               judgeLoading={judgeLoading}
+              inputDisabled={solutionsLoading || judgeLoading}
             />
           )}
         </main>

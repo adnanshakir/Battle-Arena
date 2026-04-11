@@ -9,7 +9,7 @@ const SUGGESTED = [
   "Summarize this paragraph in 3 bullet points",
 ];
 
-export function Home({ onSubmit, loading }) {
+export function Home({ onSubmit, loading, disabled = false }) {
   return (
     <div className="min-h-full bg-surface relative flex items-center justify-center p-4 overflow-y-auto">
       <div className="w-full max-w-150 space-y-5 py-8">
@@ -31,6 +31,7 @@ export function Home({ onSubmit, loading }) {
           <MessageInput
             onSubmit={onSubmit}
             loading={loading}
+            disabled={disabled}
             placeholder="Ask coding, reasoning, or general questions"
           />
           <p className="mt-2 text-[11px] text-muted text-center">
@@ -57,7 +58,7 @@ export function Home({ onSubmit, loading }) {
                 <button
                   id={`suggested-prompt-${i}`}
                   onClick={() => onSubmit(prompt)}
-                  disabled={loading}
+                  disabled={loading || disabled}
                   className={[
                     "w-full text-left px-2.5 py-2 rounded-md text-sm",
                     "text-muted",
