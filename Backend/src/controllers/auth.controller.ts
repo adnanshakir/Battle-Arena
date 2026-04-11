@@ -97,7 +97,12 @@ export const getMeController = asyncHandler(async (req: Request, res: Response):
 
   res.status(200).json({
     success: true,
-    user,
+    user: user
+      ? {
+          _id: user._id,
+          createdAt: user.get("createdAt"),
+        }
+      : null,
   });
 });
 

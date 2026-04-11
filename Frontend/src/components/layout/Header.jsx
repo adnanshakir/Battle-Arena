@@ -1,8 +1,23 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Sun, Moon, PanelLeftClose, PanelLeft } from 'lucide-react';
 import { Button } from '../ui/Button';
+import { useAuth } from '../../hooks/useAuth';
 
 export function Header({ isOpen, onToggleSidebar, theme, onToggleTheme }) {
+  const navigate = useNavigate();
+  const { user, logout } = useAuth();
+
+  const handleAuthAction = async () => {
+    if (!user) {
+      navigate('/login');
+      return;
+    }
+
+    await logout();
+    navigate('/');
+  };
+
   return (
     <header className="h-14 flex-shrink-0 flex items-center justify-between px-4 border-b border-border bg-surface">
       {/* Left */}
@@ -24,6 +39,16 @@ export function Header({ isOpen, onToggleSidebar, theme, onToggleTheme }) {
 
       {/* Right */}
       <div className="flex items-center gap-1">
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={handleAuthAction}
+          aria-label={user ? 'Logout' : 'Login'}
+          title={user ? 'Logout' : 'Login'}
+        >
+          {user ? 'Logout' : 'Login'}
+        </Button>
+
         <Button
           variant="ghost"
           size="icon"
